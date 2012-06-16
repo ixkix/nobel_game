@@ -1,12 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import javax.swing.event.*;
 
-class main extends JFrame implements ActionListener {
+public class main extends JFrame implements ActionListener {
 
-	main() {	
+	main() {
+		
+		JPanel main_p = new JPanel();
+		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Menu");
 		JMenuItem menuLoad = new JMenuItem("Load");
@@ -24,7 +26,7 @@ class main extends JFrame implements ActionListener {
 		infoVer.addActionListener(this);
 	
 
-		
+		getContentPane().add(main_p);
 		getRootPane().setJMenuBar(menuBar);
 		menuBar.add(menu);
 		menu.add(menuSave);
