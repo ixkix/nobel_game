@@ -104,7 +104,7 @@ public class main extends JFrame implements ActionListener {
 			getContentPane().setLayout(new GridLayout(4,1));
 			JLabel info_t = new JLabel("Nobel_Game");
 			JLabel info_l = new JLabel("Created by ixkix");
-			JLabel info_v = new JLabel("Version 0.1a");
+			JLabel info_v = new JLabel("Version 0.3a");
 			
 			JButton exit_btn = new JButton("Exit");
 			exit_btn.addActionListener(this);
