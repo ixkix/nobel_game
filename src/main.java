@@ -10,6 +10,7 @@ public class main extends JFrame implements ActionListener {
 	
 	JPanel main_p = new JPanel();	
 	main(){
+		setResizable(false);
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Menu");
 		JMenuItem menuLoad = new JMenuItem("Load");
@@ -70,7 +71,22 @@ public class main extends JFrame implements ActionListener {
 		
 	}
 
+	JLabel pic_p = new JLabel();
+	JPanel txt_p = new JPanel();
 	private void game_p(){//ゲーム中の画面の処理
+		add(main_p);
+		ImageIcon icon = new ImageIcon("D://workspace/novel-game/src/test.png");
+		main_p.setLayout(new BorderLayout(2,0));
+		
+		main_p.add(pic_p);
+		main_p.add(txt_p);
+		
+		pic_p.setSize(800,400);
+		pic_p.setIcon(icon);
+		txt_p.setSize(800,200);
+		txt_p.setBackground(Color.blue);
+		
+		
 		System.out.println("kita-");
 	}
 	
@@ -93,6 +109,7 @@ public class main extends JFrame implements ActionListener {
 			dlg.show();
 		} else if(e.getActionCommand() == "New  Game") {//ニューゲームの処理
 			main_p.remove(sub_p);
+			remove(main_p);
 			repaint();
 			game_p();
 		}
