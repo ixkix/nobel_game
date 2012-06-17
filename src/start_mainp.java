@@ -1,11 +1,7 @@
 import javax.swing.*;
-
 import java.awt.*;
 
-
-
-
-public class start_mainp extends main {
+class start_mainp extends main {
 
 
 	start_mainp(){
