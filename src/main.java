@@ -4,10 +4,13 @@
 //	Since 15.6.2012
 
 
+import javax.imageio.*;
 import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+
 import javax.swing.event.*;
 
 
@@ -18,6 +21,7 @@ public class main extends JFrame implements ActionListener {
 	//＿人人人人人＿
 	//＞ 突然の宣言 ＜
 	//￣Y^Y^Y^Y^Y￣
+	
 	JPanel main_p = new JPanel();
 	JPanel sub_p = new JPanel();
 	
@@ -38,15 +42,20 @@ public class main extends JFrame implements ActionListener {
 	JLabel pic_p = new JLabel();
 	JPanel txt_p = new JPanel();
 	
-	JButton save1 = new JButton("a");
-	JButton save2 = new JButton("b");
-	JButton save3 = new JButton("c");
+	JButton save1 = new JButton("first save data");
+	JButton save2 = new JButton("second save data");
+	JButton save3 = new JButton("third save data");
 	
 	JLabel info_t = new JLabel("Nobel_Game");
 	JLabel info_l = new JLabel("Created by ixkix");
 	JLabel info_v = new JLabel("Version 0.5a");
 	
 	JButton exit_btn = new JButton("Exit");
+	
+	GridBagLayout gbl = new GridBagLayout();
+	GridBagConstraints gbc = new GridBagConstraints();
+	GridBagConstraints gb2 = new GridBagConstraints();
+	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	
@@ -74,23 +83,39 @@ public class main extends JFrame implements ActionListener {
 		start_main_panel();
 	}
 	
+	BufferedImage bgi = null;
+	
 	private void start_main_panel() {		//最初の画面処理
 
+		main_p.setLayout(gbl);
 //		new_g.setMaximumSize(new Dimension(100,100));
 //		lod_g.setMaximumSize(new Dimension(100, 100));
 //		ext_g.setMaximumSize(new Dimension(100,100));
 		
+		//bgi = ImageIO.read(new File("./start.png"));
+
+		//main_p.add(new bgi);
+	
 		new_g.addActionListener(this);
 		lod_g.addActionListener(this);
 		ext_g.addActionListener(this);
 		
-
-		sub_p.setLayout(new GridLayout(3,0,10,10));
-
-		main_p.add(sub_p);
-		sub_p.add(new_g);
-		sub_p.add(lod_g);
-		sub_p.add(ext_g);
+		gbc.gridx = 4;
+		gbc.gridheight = 2;
+		gbc.gridwidth = 6;
+		gbc.insets.bottom = 2;
+		gbc.insets.top = 2;
+		
+		gbc.gridy = 1;
+		gbl.setConstraints(new_g,gbc);
+		gbc.gridy = 3;
+		gbl.setConstraints(lod_g,gbc);
+		gbc.gridy = 5;
+		gbl.setConstraints(ext_g,gbc);
+		
+		main_p.add(new_g);
+		main_p.add(lod_g);
+		main_p.add(ext_g);
 		
 	}
 
@@ -105,28 +130,38 @@ public class main extends JFrame implements ActionListener {
 		pic_p.setSize(800,400);
 		pic_p.setIcon(icon);
 		txt_p.setSize(800,200);
-		txt_p.setBackground(Color.blue);
-		
+		txt_p.setBackground(Color.blue);	
 		
 		System.out.println("kita-");
 	}
-	
 
-/* コード書き直し
+
 	void lod_g_s() {
-		getContentPane().add(main_p);
-		main_p.setBackground(Color.white);
-		main_p.setLayout(new BorderLayout(3,0));
+		add(main_p);
+		main_p.setLayout(gbl);
+		main_p.setBackground(Color.cyan);
+		
+		gb2.gridx = 1;
+		gb2.gridheight = 2;
+		gb2.gridwidth = 10;	
+		gb2.insets.bottom = 5;
+		gb2.insets.top = 5;
+		gb2.ipadx = 2;
 
-//		save1.setAlignmentX(CENTER_ALIGNMENT);
-//		save2.setAlignmentX(CENTER_ALIGNMENT);
-//		save3.setAlignmentX(CENTER_ALIGNMENT);
-		this.add(save1);
-		this.add(save2);
-		this.add(save3);
-		repaint();
+		gb2.gridy = 1;
+		gbl.setConstraints(save1,gb2);
+		gb2.gridy = 3;
+		gbl.setConstraints(save2,gb2);
+		gb2.gridy = 5;
+		gbl.setConstraints(save3,gb2);
+		
+		main_p.add(save1);
+		main_p.add(save2);
+		main_p.add(save3);
+		setVisible(true);
+
 	}
-*/
+
 
 	void new_g_s(){
 		FileReader f;
@@ -152,9 +187,14 @@ public class main extends JFrame implements ActionListener {
 		if(e.getActionCommand() == "Save") {
 			System.out.println("save");				//セーブ処理(未実装)
 		} else if(e.getActionCommand() == "Load" || e.getActionCommand() == "Load Game") {
-			System.out.println("load");				//ロード処理(未実装)
-			main_p.remove(sub_p);
-			remove(main_p);
+			System.out.println("load");			//ロード処理(未実装)
+			main_p.remove(new_g);
+			main_p.remove(lod_g);
+			main_p.remove(ext_g);
+			main_p.remove(save1);
+			main_p.remove(save2);
+			main_p.remove(save3);
+			getContentPane().remove(main_p);
 			repaint();
 			lod_g_s();
 		} else if(e.getActionCommand() == "Exit" || e.getActionCommand() == "Exit Game") {
@@ -163,11 +203,13 @@ public class main extends JFrame implements ActionListener {
 			Verinfo dlg = new Verinfo(this); // ダイアログを表示(バージョンとか
 			dlg.show();
 		} else if(e.getActionCommand() == "New  Game") {//ニューゲームの処理
-			main_p.remove(sub_p);
-			remove(main_p);
+			main_p.remove(new_g);
+			main_p.remove(lod_g);
+			main_p.remove(ext_g);
+			getContentPane().remove(main_p);
 			repaint();
 			game_p();
-			new_g_s();
+//			new_g_s();
 		}
 }
 	
@@ -191,6 +233,5 @@ public class main extends JFrame implements ActionListener {
 			hide();
 
 		}
-	}//ここまでバージョン表示処理
-	
+	}//ここまでバージョン表示処
 }
