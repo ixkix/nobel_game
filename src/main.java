@@ -4,14 +4,12 @@
 //	Since 15.6.2012
 
 
-import javax.imageio.*;
 import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-
-import javax.swing.event.*;
+import java.awt.image.*;
+import javax.swing.border.*;
 
 
 public class main extends JFrame implements ActionListener {
@@ -34,7 +32,6 @@ public class main extends JFrame implements ActionListener {
 	JMenuItem infoSet = new JMenuItem("Settings");
 	JMenuItem infoVer = new JMenuItem("Version");
 	
-	
 	JButton new_g = new JButton("New  Game");
 	JButton lod_g = new JButton("Load Game");
 	JButton ext_g = new JButton("Exit Game");
@@ -50,12 +47,19 @@ public class main extends JFrame implements ActionListener {
 	JLabel info_l = new JLabel("Created by ixkix");
 	JLabel info_v = new JLabel("Version 0.5a");
 	
+	
+	JLabel txt_l = new JLabel("");
+	
 	JButton exit_btn = new JButton("Exit");
 	
 	GridBagLayout gbl = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 	GridBagConstraints gb2 = new GridBagConstraints();
 	
+	static String no1ngs = null;
+	static String no2ngs = null;
+	
+	String lod_sina[] = new String[256];
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	
@@ -88,13 +92,6 @@ public class main extends JFrame implements ActionListener {
 	private void start_main_panel() {		//最初の画面処理
 
 		main_p.setLayout(gbl);
-//		new_g.setMaximumSize(new Dimension(100,100));
-//		lod_g.setMaximumSize(new Dimension(100, 100));
-//		ext_g.setMaximumSize(new Dimension(100,100));
-		
-		//bgi = ImageIO.read(new File("./start.png"));
-
-		//main_p.add(new bgi);
 	
 		new_g.addActionListener(this);
 		lod_g.addActionListener(this);
@@ -120,24 +117,21 @@ public class main extends JFrame implements ActionListener {
 	}
 
 	private void game_p(){				//ゲーム中の画面の処理
-		add(main_p);
-		ImageIcon icon = new ImageIcon("D://workspace/novel-game/src/test.png");
-		main_p.setLayout(new BorderLayout(2,0));
-		
+		main_p.removeAll();
+		main_p.setLayout(new BoxLayout(main_p,BoxLayout.Y_AXIS));
+				
 		main_p.add(pic_p);
 		main_p.add(txt_p);
-		
-		pic_p.setSize(800,400);
-		pic_p.setIcon(icon);
-		txt_p.setSize(800,200);
-		txt_p.setBackground(Color.blue);	
+		pic_p.setMaximumSize(new Dimension(800,400));
+//		txt_p.setMaximumSize(new Dimension(800,200));
 		
 		System.out.println("kita-");
+		txt_p.setBackground(Color.black);
+		setVisible(true);
 	}
 
 
 	void lod_g_s() {
-		add(main_p);
 		main_p.setLayout(gbl);
 		main_p.setBackground(Color.cyan);
 		
@@ -162,24 +156,107 @@ public class main extends JFrame implements ActionListener {
 
 	}
 
-
 	void new_g_s(){
+}
+	
+	
+	void load_scenario(KeyEvent k){
+		int key = 0;
+		int i = 0;
+		int sina_long =  0;
+/*		txt_p.add(txt_l);
+		txt_l.setSize(800,200);*/
+		txt_p.add(txt_l);
+		txt_p.setBackground(Color.white);
+		txt_p.setBorder(new LineBorder(Color.magenta,2));
 		FileReader f;
+
+//分岐処理
 		try {
-			f = new FileReader("D://workspace/novel-game/src/c1.ngs");
+
+			txt_l.setMaximumSize(new Dimension(800,200));
+			f = new FileReader(no1ngs);
 			BufferedReader b = new BufferedReader(f);
-			String s;
-	        s = b.readLine();
-	        System.out.println(s);
+
+			while((lod_sina[i] = b.readLine())!=null){
+	
+				System.out.println(lod_sina[i]);
+				i++;
+			}
+			
+			i=0;
+			
+			while(true){
+				sina_long = 0;
+				key=0;
+				String tag = null;
+
+					if(lod_sina[i].indexOf("<text>") != -1){
+						tag = "text";
+						sina_long = lod_sina[i].length();
+					}else if(lod_sina[i].indexOf("<pict>") != -1){
+						tag = "pict";
+						sina_long = lod_sina[i].length();
+					}else if(lod_sina[i].indexOf("<exit>") != -1){
+						tag = "exit";
+					}
+			
+				switch(tag){//命令の処理はここに
+					case "text":
+						lod_sina[i] = lod_sina[i].substring(6, sina_long);
+						txt_l.setText(lod_sina[i]);
+						
+						int kc;
+						 do{
+							 kc = k.getKeyCode();
+							 String kca = KeyEvent.getKeyText(kc);
+						    }while(kca != ENTER);							//エンターキーを押すまで待機させる、それができたらおｋ
+						break;
+					
+					case "pict":
+						lod_sina[i] = lod_sina[i].substring(6, sina_long);
+						ImageIcon icon = new ImageIcon("test.png");
+						pic_p.setIcon(icon);
+						break;
+					
+					case "exit":
+						setVisible(false);
+						break;
+				}
+				i++;
+
+			}
+			
 		} catch (FileNotFoundException e) {
+			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
+		
 	}
-
+	
+	public void mouseClicked(MouseEvent e){
+	  }
+	
+	static void load_ini(){
+	try {
+		java.util.Properties prop = new java.util.Properties();
+		prop.load(new java.io.FileInputStream("test.ini"));
+		no1ngs = prop.getProperty("no1ngs");
+		no2ngs = prop.getProperty("no2ngs");
+		System.out.println(no1ngs);
+		System.out.println(no2ngs);
+		} catch (java.io.IOException e) {
+		e.printStackTrace();
+		}
+	
+	}
+	
 	public static void main(String[] args){
 		new main();
+		load_ini();
 	}
 	
 	@Override
@@ -188,14 +265,7 @@ public class main extends JFrame implements ActionListener {
 			System.out.println("save");				//セーブ処理(未実装)
 		} else if(e.getActionCommand() == "Load" || e.getActionCommand() == "Load Game") {
 			System.out.println("load");			//ロード処理(未実装)
-			main_p.remove(new_g);
-			main_p.remove(lod_g);
-			main_p.remove(ext_g);
-			main_p.remove(save1);
-			main_p.remove(save2);
-			main_p.remove(save3);
-			getContentPane().remove(main_p);
-			repaint();
+			main_p.removeAll();
 			lod_g_s();
 		} else if(e.getActionCommand() == "Exit" || e.getActionCommand() == "Exit Game") {
 			setVisible(false);						//終了処理
@@ -203,13 +273,9 @@ public class main extends JFrame implements ActionListener {
 			Verinfo dlg = new Verinfo(this); // ダイアログを表示(バージョンとか
 			dlg.show();
 		} else if(e.getActionCommand() == "New  Game") {//ニューゲームの処理
-			main_p.remove(new_g);
-			main_p.remove(lod_g);
-			main_p.remove(ext_g);
-			getContentPane().remove(main_p);
-			repaint();
 			game_p();
 //			new_g_s();
+			load_scenario(null);
 		}
 }
 	
@@ -234,4 +300,5 @@ public class main extends JFrame implements ActionListener {
 
 		}
 	}//ここまでバージョン表示処
+
 }
